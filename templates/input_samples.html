@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+    <title>Input Samples</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .attribute-section {
+            margin-bottom: 30px;
+        }
+        .form-group h4 {
+            margin-top: 20px;
+        }
+        .input-row {
+            margin-bottom: 20px;
+        }
+        .input-row .form-control {
+            width: 100%;
+        }
+        .label-row {
+            margin-bottom: 5px;
+        }
+        .label-row .label {
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    {% set labels = ['Poor', 'Fair', 'Medium', 'Good', 'Excellent'] %}
+    {% set quality_labels = ['Not at all important', 'Somewhat important', 'Important', 'Highly important', 'Extremely important'] %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Enter Data for {{ num_samples }} Samples</h1>
+        <form method="post">
+            <!-- Samples Section -->
+            {% for i in range(1, num_samples+1) %}
+                <div class="attribute-section">
+                    <h2>Sample {{ i }}</h2>
+                    {% for attribute in attributes %}
+                        <div class="form-group">
+                            <h4>{{ attribute }}</h4>
+                            <!-- Labels Row -->
+                            <div class="row label-row">
+                                {% for j in range(5) %}
+                                    <div class="col text-center">
+                                        {{ labels[j] }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <!-- Inputs Row -->
+                            <div class="row input-row">
+                                {% for j in range(5) %}
+                                    <div class="col">
+                                        <input type="number" name="Sample {{ i }}_{{ attribute }}[]" min="0" class="form-control" required>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <!-- Quality Scores Section -->
+            <div class="attribute-section">
+                <h2>Quality Scores</h2>
+                {% for attribute in attributes %}
+                    <div class="form-group">
+                        <h4>{{ attribute }}</h4>
+                        <!-- Labels Row -->
+                        <div class="row label-row">
+                            {% for j in range(5) %}
+                                <div class="col text-center">
+                                    {{ quality_labels[j] }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <!-- Inputs Row -->
+                        <div class="row input-row">
+                            {% for j in range(5) %}
+                                <div class="col">
+                                    <input type="number" name="Quality_{{ attribute }}[]" min="0" class="form-control" required>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="btn btn-success btn-block">Calculate</button>
+        </form>
+    </div>
+</body>
+</html>

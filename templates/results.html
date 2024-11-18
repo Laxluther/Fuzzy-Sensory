@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+    <title>Results</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        h2 {
+            margin-top: 30px;
+        }
+        .label-note {
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    {% set sample_labels = ['Poor', 'Fair', 'Medium', 'Good', 'Very Good', 'Excellent'] %}
+    {% set attribute_labels = ['Not at all Necessary', 'Somewhat Necessary', 'Necessary', 'Important', 'Highly Important', 'Extremely Important'] %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Calculation Results</h1>
+
+        <h2>Similarity Measures for Samples</h2>
+        {{ results['df_samples'].to_html(classes='table table-bordered table-striped', border=0) | safe }}
+        <p class="label-note">
+            {% for i in range(sample_labels|length) %}
+                f{{ i+1 }}: {{ sample_labels[i] }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+
+        <h2>Similarity Measures for Quality Attributes</h2>
+        {{ results['df_quality'].to_html(classes='table table-bordered table-striped', border=0) | safe }}
+        <p class="label-note">
+            {% for i in range(attribute_labels|length) %}
+                f{{ i+1 }}: {{ attribute_labels[i] }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+
+        <!-- Additional Results -->
+        <!-- Rest of your template -->
+    </div>
+</body>
+</html>

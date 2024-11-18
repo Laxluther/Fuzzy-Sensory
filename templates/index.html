@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+    <title>Fuzzy Calculator</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Fuzzy-sensory Calculator</h1>
+        <form method="post">
+            <div class="form-group">
+                <label for="num_samples">Enter the number of samples:</label>
+                <input type="number" id="num_samples" name="num_samples" min="1" class="form-control" required>
+            </div>
+            <h3>Enter Attribute Names:</h3>
+            {% for i in range(1, 5) %}
+                <div class="form-group">
+                    <label for="attribute_{{ i }}">Attribute {{ i }}:</label>
+                    <input type="text" id="attribute_{{ i }}" name="attribute_{{ i }}" class="form-control" required>
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
