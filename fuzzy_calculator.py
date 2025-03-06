@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-# Define constants
+
 MEMBERSHIP_VALUES = [
     (0, 0, 25), (25, 25, 25), (50, 25, 25), (75, 25, 25), (100, 25, 0)
 ]
@@ -12,15 +12,14 @@ FUZZY_SCALE = [
     [0, 0, 0.5, 1, 1, 0.5, 0, 0, 0, 0],  # F3
     [0, 0, 0, 0, 0.5, 1, 1, 0.5, 0, 0],  # F4
     [0, 0, 0, 0, 0, 0, 0.5, 1, 1, 0.5],  # F5
-    [0, 0, 0, 0, 0, 0, 0, 0, 0.5, 1]  # F6
+    [0, 0, 0, 0, 0, 0, 0, 0, 0.5, 1]      # F6
 ]
-
 
 class FuzzyCalculator:
     def __init__(self, sample_scores, quality_scores, attributes):
         self.sample_scores = sample_scores
         self.quality_scores = quality_scores
-        self.attributes = attributes  # Custom attribute names
+        self.attributes = attributes 
         self.triplets = {}
         self.quality_triplets = {}
         self.relative_triplets = {}
@@ -55,7 +54,7 @@ class FuzzyCalculator:
         return [round(value, 3) for value in overall_triplet]
 
     def calculate_bx_values(self, a, b, c):
-        x_values = [0, 20, 30, 40, 50, 60, 70, 80, 90]  # Importance levels
+        x_values = [0, 20, 30, 40, 50, 60, 70, 80, 90]  
         bx_values = []
 
         for i, x in enumerate(x_values):
@@ -66,11 +65,11 @@ class FuzzyCalculator:
             else:
                 bx = 0
 
-            # Ensure Bx = 1 if a falls between two x values
+         
             if i > 0 and x_values[i - 1] <= a < x:
-                bx_values.append(1)  # Insert 1 for the previous x value
+                bx_values.append(1)
             elif x == a:
-                bx = 1  # Set the current value to 1 if x equals a
+                bx = 1
 
             bx_values.append(round(bx, 3))
 
@@ -100,43 +99,42 @@ class FuzzyCalculator:
         return similarity_measures
 
     def compute(self):
-        # Step 1: Calculate triplets for each sample and attribute
+       
         self.triplets = {
             sample: {attr: self.calculate_triplet(scores, MEMBERSHIP_VALUES) for attr, scores in attributes.items()}
             for sample, attributes in self.sample_scores.items()
         }
 
-        # Step 2: Calculate triplets for quality attributes
+       
         self.quality_triplets = {
             attr: self.calculate_triplet(scores, MEMBERSHIP_VALUES) for attr, scores in self.quality_scores.items()
         }
 
-        # Step 3: Calculate relative triplets for quality attributes
+      
         quality_sum = sum(values[0] for values in self.quality_triplets.values())
         self.relative_triplets = {
             attr: (np.array(values) / quality_sum).tolist() for attr, values in self.quality_triplets.items()
         } if quality_sum != 0 else {attr: [0, 0, 0] for attr in self.quality_triplets}
 
-        # Step 4: Calculate overall triplets for each sample
+      
         self.overall_triplets = {
-            sample: self.calculate_overall_triplet(attributes, self.relative_triplets) for sample, attributes in
-            self.triplets.items()
+            sample: self.calculate_overall_triplet(attributes, self.relative_triplets)
+            for sample, attributes in self.triplets.items()
         }
 
-        # Step 5: Calculate Bx values for samples and quality attributes
-        self.bx_values_samples = {sample: self.calculate_bx_values(*triplet) for sample, triplet in
-                                  self.overall_triplets.items()}
-        self.bx_values_quality = {attr: self.calculate_bx_values(*triplet) for attr, triplet in
-                                  self.quality_triplets.items()}
+        self.bx_values_samples = {sample: self.calculate_bx_values(*triplet)
+                                  for sample, triplet in self.overall_triplets.items()}
+        self.bx_values_quality = {attr: self.calculate_bx_values(*triplet)
+                                  for attr, triplet in self.quality_triplets.items()}
 
-        # Step 6: Calculate similarity measures
         self.similarity_measures_samples = self.calculate_similarity_measures(self.bx_values_samples)
         self.similarity_measures_quality = self.calculate_similarity_measures(self.bx_values_quality)
 
-        # Step 7: Generate tables
-        sample_names = list(self.sample_scores.keys())
-        self.df_samples = pd.DataFrame(self.similarity_measures_samples, index=["F1", "F2", "F3", "F4", "F5", "F6"])
-        self.df_quality = pd.DataFrame(self.similarity_measures_quality, index=["F1", "F2", "F3", "F4", "F5", "F6"])
+      
+        self.df_samples = pd.DataFrame(self.similarity_measures_samples,
+                                       index=["F1", "F2", "F3", "F4", "F5", "F6"])
+        self.df_quality = pd.DataFrame(self.similarity_measures_quality,
+                                       index=["F1", "F2", "F3", "F4", "F5", "F6"])
 
     def get_results(self):
         return {
