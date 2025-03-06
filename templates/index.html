@@ -1,29 +1,111 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-    <title>Fuzzy Calculator</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fuzzy Calculator Setup</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Press Start 2P Font from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    /* Full-screen gradient background, no extra margin/padding */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    }
+    .vh-100 {
+      min-height: 100vh;
+    }
+    /* Large heading on the left, using Press Start 2P */
+    .sensory-heading {
+      font-family: 'Press Start 2P', fantasy;
+      color: #000; /* Black text */
+      font-size: 6rem;
+      line-height: 1.2;
+      text-align: center;
+    }
+    /* Responsive font size for smaller screens */
+    @media (max-width: 576px) {
+      .sensory-heading {
+        font-size: 2.5rem;
+      }
+    }
+    /* Semi-transparent card */
+    .custom-card {
+      background-color: rgba(255, 255, 255, 0.8);
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      width: 400px; /* Adjust as needed */
+    }
+    .custom-card .card-body {
+      padding: 2rem;
+    }
+    /* Green button */
+    .btn-green {
+      background-color: #20c997;
+      border: none;
+    }
+    .btn-green:hover {
+      background-color: #17a98c;
+    }
+  </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Fuzzy-sensory Calculator</h1>
-        <form method="post">
-            <div class="form-group">
-                <label for="num_samples">Enter the number of samples:</label>
-                <input type="number" id="num_samples" name="num_samples" min="1" class="form-control" required>
-            </div>
-            <h3>Enter Attribute Names:</h3>
-            {% for i in range(1, 5) %}
-                <div class="form-group">
-                    <label for="attribute_{{ i }}">Attribute {{ i }}:</label>
-                    <input type="text" id="attribute_{{ i }}" name="attribute_{{ i }}" class="form-control" required>
+  <div class="container-fluid p-0 m-0 vh-100">
+    <div class="row g-0 h-100">
+      <!-- Left side: large Sensory Analyzer heading -->
+      <div class="col-md-6 d-flex align-items-center justify-content-center">
+        <h1 class="sensory-heading">Sensory Analyzer</h1>
+      </div>
+      <!-- Right side: form card -->
+      <div class="col-md-6 d-flex align-items-center justify-content-center">
+        <div class="card custom-card">
+          <div class="card-body">
+            <h2 class="card-title text-center mb-4">Calculator</h2>
+            <form method="post">
+              <div class="mb-3">
+                <label for="num_samples" class="form-label">Enter the number of samples:</label>
+                <input 
+                  type="number" 
+                  id="num_samples" 
+                  name="num_samples" 
+                  min="1" 
+                  class="form-control" 
+                  required
+                >
+              <h4 class="mt-4 mb-3">Enter Attribute Names:</h4>
+              {% for i in range(1, 5) %}
+                <div class="mb-3">
+                  <label for="attribute_{{ i }}" class="form-label">
+                    Attribute {{ i }}
+                  </label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="attribute_{{ i }}" 
+                    name="attribute_{{ i }}" 
+                    placeholder="Attribute {{ i }}" 
+                    required
+                  >
                 </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-primary btn-block">Submit</button>
-        </form>
+              {% endfor %}
+              <button type="submit" class="btn btn-green w-100 mt-3">
+                Proceed
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
