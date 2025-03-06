@@ -3,106 +3,144 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fuzzy Calculator Setup</title>
+  <title>Input Samples</title>
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Press Start 2P Font from Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <!-- Custom Styles -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   <style>
-    /* Full-screen gradient background, no extra margin/padding */
-    html, body {
+    body {
+      background: #f8f9fa;
+      font-family: 'Roboto', sans-serif;
       margin: 0;
       padding: 0;
-      height: 100%;
-      background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
     }
-    .vh-100 {
-      min-height: 100vh;
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
-    /* Large heading on the left, using Press Start 2P */
-    .sensory-heading {
-      font-family: 'Press Start 2P', fantasy;
-      color: #000; /* Black text */
-      font-size: 6rem;
-      line-height: 1.2;
+    .card-header {
+      background-color: #20c997; /* Teal */
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 8px 8px 0 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .card-body {
+      padding: 1rem;
+    }
+    .form-control-sm {
+      padding: 0.4rem 0.5rem;
+      font-size: 0.85rem;
+    }
+    .row-cols-md-2 > .col {
+      display: flex;
+      flex-direction: column;
+    }
+    .attribute-label {
+      font-weight: 600;
+      margin-right: 0.5rem;
+      font-size: 0.95rem;
+    }
+    .text-center {
       text-align: center;
-    }
-    /* Responsive font size for smaller screens */
-    @media (max-width: 576px) {
-      .sensory-heading {
-        font-size: 2.5rem;
-      }
-    }
-    /* Semi-transparent card */
-    .custom-card {
-      background-color: rgba(255, 255, 255, 0.8);
-      border: none;
-      border-radius: 10px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-      width: 400px; /* Adjust as needed */
-    }
-    .custom-card .card-body {
-      padding: 2rem;
-    }
-    /* Green button */
-    .btn-green {
-      background-color: #20c997;
-      border: none;
-    }
-    .btn-green:hover {
-      background-color: #17a98c;
     }
   </style>
 </head>
 <body>
-  <div class="container-fluid p-0 m-0 vh-100">
-    <div class="row g-0 h-100">
-      <!-- Left side: large Sensory Analyzer heading -->
-      <div class="col-md-6 d-flex align-items-center justify-content-center">
-        <h1 class="sensory-heading">Sensory Analyzer</h1>
+  <!-- container-fluid for minimal side spacing -->
+  <div class="container-fluid px-4 py-4">
+    <h2 class="text-center mb-3">Enter Data for {{ num_samples }} Samples</h2>
+    
+    <form method="post">
+      <!-- SAMPLES SECTION (cards in two-column layout) -->
+      <div class="row row-cols-1 row-cols-md-2 g-3">
+        {% for i in range(1, num_samples+1) %}
+          <div class="col">
+            <div class="card h-100">
+              <div class="card-header">
+                Sample {{ i }}
+              </div>
+              <div class="card-body">
+                {% for attribute in attributes %}
+                  <div class="row align-items-center mb-2">
+                    <!-- Attribute Label -->
+                    <div class="col-auto">
+                      <span class="attribute-label">{{ attribute }}</span>
+                    </div>
+                    <!-- Inputs Row -->
+                    <div class="col">
+                      <div class="row g-2">
+                        {% set labels = ['Poor', 'Fair', 'Medium', 'Good', 'Excellent'] %}
+                        {% for j in range(5) %}
+                          <div class="col">
+                            <input 
+                              type="number" 
+                              name="Sample {{ i }}_{{ attribute }}[]" 
+                              min="0" 
+                              class="form-control form-control-sm text-center" 
+                              placeholder="{{ labels[j] }}"
+                              required>
+                          </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
       </div>
-      <!-- Right side: form card -->
-      <div class="col-md-6 d-flex align-items-center justify-content-center">
-        <div class="card custom-card">
-          <div class="card-body">
-            <h2 class="card-title text-center mb-4">Calculator</h2>
-            <form method="post">
-              <div class="mb-3">
-                <label for="num_samples" class="form-label">Enter the number of samples:</label>
-                <input 
-                  type="number" 
-                  id="num_samples" 
-                  name="num_samples" 
-                  min="1" 
-                  class="form-control" 
-                  required
-                >
-              <h4 class="mt-4 mb-3">Enter Attribute Names:</h4>
-              {% for i in range(1, 5) %}
-                <div class="mb-3">
-                  <label for="attribute_{{ i }}" class="form-label">
-                    Attribute {{ i }}
-                  </label>
-                  <input 
-                    type="text" 
-                    class="form-control" 
-                    id="attribute_{{ i }}" 
-                    name="attribute_{{ i }}" 
-                    placeholder="Attribute {{ i }}" 
-                    required
-                  >
-                </div>
-              {% endfor %}
-              <button type="submit" class="btn btn-green w-100 mt-3">
-                Proceed
-              </button>
-            </form>
+      
+      <!-- QUALITY SCORES SECTION (single table for clarity) -->
+      <div class="card mt-4">
+        <div class="card-header">
+          Quality Scores
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+              <thead>
+                <tr class="table-secondary">
+                  <th>Attribute</th>
+                  <th>Not at all important</th>
+                  <th>Somewhat important</th>
+                  <th>Important</th>
+                  <th>Highly important</th>
+                  <th>Extremely important</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for attribute in attributes %}
+                  <tr>
+                    <td class="fw-bold">{{ attribute }}</td>
+                    {% for j in range(5) %}
+                      <td>
+                        <input 
+                          type="number"
+                          name="Quality_{{ attribute }}[]"
+                          min="0"
+                          class="form-control form-control-sm text-center"
+                          required
+                        >
+                      </td>
+                    {% endfor %}
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-    </div>
+      
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-success w-100 mt-3">
+        Calculate
+      </button>
+    </form>
   </div>
 
   <!-- Bootstrap 5 JS Bundle -->
